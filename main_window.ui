@@ -79,6 +79,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="pushButton_delete_task">
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -94,6 +101,13 @@
      </layout>
     </item>
     <item>
+     <widget class="QLabel" name="label_tasks">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTreeWidget" name="treeWidget">
       <column>
        <property name="text">
@@ -105,7 +119,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QPushButton" name="pushButton_delete_task">
+       <widget class="QPushButton" name="pushButton_delete_task_from_tree">
         <property name="text">
          <string>PushButton</string>
         </property>
