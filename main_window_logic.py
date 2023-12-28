@@ -20,8 +20,8 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
         self.spinBox_task_priority.setMinimum(1)
         self.spinBox_task_priority.setValue(1)
         self.pushButton_save_task.clicked.connect(self.button_save_task_clicked)
-        self.pushButton_delete_task_from_tree.clicked.connect(self.delete_task_from_tree_widget)
-        self.pushButton_delete_task.clicked.connect(self.delete_task_from_label)
+        self.pushButton_delete_task_from_tree.clicked.connect(self.delete_task_using_tree_widget)
+        self.pushButton_delete_task.clicked.connect(self.delete_task_using_input_fields)
         self.treeWidget.itemClicked.connect(self.item_clicked)
         self.treeWidget.setColumnCount(2)
         headers = ["Приоритет", "Название"]
@@ -63,7 +63,7 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
                 return self.treeWidget.topLevelItem(i)
         return None
 
-    def delete_task_from_label(self):
+    def delete_task_using_input_fields(self):
         """Обработчик нажатия на кнопку "Удалить задачу" из label"""
         #Берем имя задачи из поля ввода
         task_name = self.lineEdit_task_name.text()
@@ -75,7 +75,7 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
         self.spinBox_task_priority.setValue(1)
         #Удаляем элемент из виджета дерево
         self.__current_item = self.__get_item_by_priority_and_name(task_priority, task_name)
-        self.delete_task_from_tree_widget()
+        self.delete_item_from_tree_widget()
         #Удалить задачу из TaskManager
         #Заново отрисовать задачи в label
         #self.label_tasks.setText(Сюда вставить строку с задачами)
@@ -89,21 +89,44 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
                 return item.child(i)
         return None
 
-    def delete_task_from_tree_widget(self):
+    def delete_task_using_tree_widget(self):
         """Обработчик нажатия на кнопку "Удалить задачу" из виджета дерева"""
+        priority = self.__get_priority_from_tree_widget()
+        if priority is None:
+            return
+        name = self.__get_name_from_tree_widget()
+        if name is None:
+            return
+        self.delete_item_from_tree_widget()
+        #Удалить задачу из TaskManager
+        #Заново отрисовать задачи в label
+        #self.label_tasks.setText(Сюда вставить строку с задачами)
+
+    def delete_item_from_tree_widget(self):
         if self.__current_item is None:
             return
         parent:QTreeWidgetItem = self.__current_item.parent()
         if parent is None:
             return
-        priority = parent.text(0)
-        name = self.__current_item.text(1)
         parent.removeChild(self.__current_item)
         if parent.childCount() == 0:
             parent.removeChild(parent)
-        #Удалить задачу из TaskManager
-        #Заново отрисовать задачи в label
-        #self.label_tasks.setText(Сюда вставить строку с задачами)
+
+    def __get_priority_from_tree_widget(self):
+        if self.__current_item is None:
+            return None
+        parent:QTreeWidgetItem = self.__current_item.parent()
+        if parent is None:
+            return None
+        return parent.text(0)
+
+    def __get_name_from_tree_widget(self):
+        if self.__current_item is None:
+            return None
+        parent:QTreeWidgetItem = self.__current_item.parent()
+        if parent is None:
+            return
+        return self.__current_item.text(1)
 
     def item_clicked(self, item, column):
         """Обработчик выбора элемента в виджете дерево"""
