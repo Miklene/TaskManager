@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem
 
 from main_window import Ui_MainWindow
 
+from StackManager import StackManager
+
 
 class MainWindowLogic(QMainWindow, Ui_MainWindow):
 
@@ -28,6 +30,7 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
         self.treeWidget.setHeaderLabels(headers)
         self.__current_item = None
         #Вот тут надо создать объект TaskManager
+        self.stack = StackManager()
 
 
     def button_save_task_clicked(self):
@@ -43,8 +46,9 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
         #Добавить задачу в вижет Дерево
         self.add_task_to_tree_widget(task_priority, task_name)
         #Вот тут надо добавить задачу в TaskManager
+        self.stack.add(task_name, task_priority)
         #Также необходимо отрисовать задачи из TaskManager в label
-        #self.label_tasks.setText(Сюда вставить строку с задачами)
+        self.label_tasks.setText(str(self.stack))
 
     def add_task_to_tree_widget(self, priority: str, name: str):
         """Добавить задачу в виджет дерево
@@ -77,8 +81,9 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
         self.__current_item = self.__get_item_by_priority_and_name(task_priority, task_name)
         self.delete_item_from_tree_widget()
         #Удалить задачу из TaskManager
+        self.stack.delete_elem(task_name, task_priority)
         #Заново отрисовать задачи в label
-        #self.label_tasks.setText(Сюда вставить строку с задачами)
+        self.label_tasks.setText(str(self.stack))
 
     def __get_item_by_priority_and_name(self, priority, name):
         item:QTreeWidgetItem = self.__get_item_from_tree_widget(priority)
@@ -99,13 +104,14 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
             return
         self.delete_item_from_tree_widget()
         #Удалить задачу из TaskManager
-        #Заново отрисовать задачи в label
-        #self.label_tasks.setText(Сюда вставить строку с задачами)
+        self.stack.delete_elem(task_name, task_priority)
+        # Заново отрисовать задачи в label
+        self.label_tasks.setText(str(self.stack))
 
     def delete_item_from_tree_widget(self):
         if self.__current_item is None:
             return
-        parent:QTreeWidgetItem = self.__current_item.parent()
+        parent : QTreeWidgetItem = self.__current_item.parent()
         if parent is None:
             return
         parent.removeChild(self.__current_item)
@@ -115,7 +121,7 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
     def __get_priority_from_tree_widget(self):
         if self.__current_item is None:
             return None
-        parent:QTreeWidgetItem = self.__current_item.parent()
+        parent : QTreeWidgetItem = self.__current_item.parent()
         if parent is None:
             return None
         return parent.text(0)
@@ -123,7 +129,7 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
     def __get_name_from_tree_widget(self):
         if self.__current_item is None:
             return None
-        parent:QTreeWidgetItem = self.__current_item.parent()
+        parent: QTreeWidgetItem = self.__current_item.parent()
         if parent is None:
             return
         return self.__current_item.text(1)

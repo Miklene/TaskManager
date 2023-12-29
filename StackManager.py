@@ -31,3 +31,12 @@ class StackManager:
         else:
             for priority_index, tasks in sorted(self.__stack.items()):
                 print(priority_index, tasks)
+
+    def __str__(self):
+        string = ''
+        if len(self.__stack) == 0:
+            return 'Список пустой.'
+        else:
+            for priority_index, tasks in sorted(self.__stack.items()):
+                string += priority_index + ' ' + str(tasks) + '\n'
+        return string
