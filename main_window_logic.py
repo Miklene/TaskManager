@@ -104,7 +104,7 @@ class MainWindowLogic(QMainWindow, Ui_MainWindow):
             return
         self.delete_item_from_tree_widget()
         #Удалить задачу из TaskManager
-        self.stack.delete_elem(task_name, task_priority)
+        self.stack.delete_elem(name, priority)
         # Заново отрисовать задачи в label
         self.label_tasks.setText(str(self.stack))
 
